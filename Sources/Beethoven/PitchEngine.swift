@@ -83,7 +83,9 @@ public final class PitchEngine {
         #if canImport(UIKit)
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
           if #available(iOS 10, tvOS 10, macCatalyst 13, *) {
-            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            UIApplication.shared.open(settingsURL, options: [:]) {
+              if !$0 { print("Could not open \(settingsURL)") }
+            }
           } else {
             UIApplication.shared.openURL(settingsURL)
           }
