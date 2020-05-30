@@ -39,14 +39,14 @@ final class InputSignalTracker: SignalTracker {
   // MARK: - Tracking
 
   func start() throws {
-    try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+    try session.setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord)))
 
     // check input type
     let currentRoute = session.currentRoute
     if currentRoute.outputs.count != 0 {
         for description in currentRoute.outputs {
-            if (description.portType != AVAudioSessionPortHeadphones) { // input from speaker if port is not headphones
-                try session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+            if (convertFromAVAudioSessionPort(description.portType) != convertFromAVAudioSessionPort(AVAudioSession.Port.headphones)) { // input from speaker if port is not headphones
+                try session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
             } else { // input from default (headphones)
                 try session.overrideOutputAudioPort(.none)
             }
@@ -109,4 +109,14 @@ final class InputSignalTracker: SignalTracker {
       audioChannel = connection.audioChannels[0]
     } catch {}
   }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionPort(_ input: AVAudioSession.Port) -> String {
+	return input.rawValue
 }
