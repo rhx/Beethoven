@@ -6,7 +6,7 @@
 //  Copyright © 2016 Vadym Markov. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 final class YINEstimator: Estimator {
   let transformer: Transformer = YINTransformer()

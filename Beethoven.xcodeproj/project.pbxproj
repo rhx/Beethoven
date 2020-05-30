@@ -95,6 +95,9 @@
 		D5A49C741C343EC300427BF8 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		D5A49CDD1C3458EA00427BF8 /* Pitchy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pitchy.framework; path = Carthage/Build/iOS/Pitchy.framework; sourceTree = "<group>"; };
 		E0BF88FC1E85C31A00079F64 /* SimulatorSignalTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorSignalTracker.swift; sourceTree = "<group>"; };
+		F1BA766924827C9600F28F79 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = SOURCE_ROOT; };
+		F1BA766A24827DB600F28F79 /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
+		F1BA766B24827E2900F28F79 /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +128,7 @@
 				D55C01F41DBD1F8100575260 /* Frameworks */,
 				D51575AC1C343B77006F8E75 /* Products */,
 				D55C02031DBD210600575260 /* Project */,
-				D59CB1361C345E0A00290B63 /* Source */,
+				D59CB1361C345E0A00290B63 /* Sources */,
 				D55C01F51DBD210600575260 /* Tests */,
 			);
 			indentWidth = 2;
@@ -154,54 +157,24 @@
 		D55C01F51DBD210600575260 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				D55C01F61DBD210600575260 /* Spec */,
+				F1BA766A24827DB600F28F79 /* LinuxMain.swift */,
+				D55C01F61DBD210600575260 /* BeethovenTests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
-		D55C01F61DBD210600575260 /* Spec */ = {
+		D55C01F61DBD210600575260 /* BeethovenTests */ = {
 			isa = PBXGroup;
 			children = (
+				F1BA766B24827E2900F28F79 /* XCTestManifests.swift */,
 				D55C01F71DBD210600575260 /* ConfigSpec.swift */,
-				D55C01FA1DBD210600575260 /* Estimation */,
-				D55C01FD1DBD210600575260 /* Extensions */,
-				D5843EE91DBD34680077F86E /* Library */,
-				D55C01FF1DBD210600575260 /* Transform */,
-			);
-			path = Spec;
-			sourceTree = "<group>";
-		};
-		D55C01FA1DBD210600575260 /* Estimation */ = {
-			isa = PBXGroup;
-			children = (
 				D55C01FB1DBD210600575260 /* EstimationFactorySpec.swift */,
 				D55C01FC1DBD210600575260 /* EstimatorSpec.swift */,
-			);
-			path = Estimation;
-			sourceTree = "<group>";
-		};
-		D55C01FD1DBD210600575260 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
 				D55C01FE1DBD210600575260 /* ArrayExtensionsSpec.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		D55C01FF1DBD210600575260 /* Transform */ = {
-			isa = PBXGroup;
-			children = (
-				D55C02001DBD210600575260 /* Strategies */,
-			);
-			path = Transform;
-			sourceTree = "<group>";
-		};
-		D55C02001DBD210600575260 /* Strategies */ = {
-			isa = PBXGroup;
-			children = (
+				D5843EEA1DBD34680077F86E /* BufferSpec.swift */,
 				D55C02011DBD210600575260 /* FFTTransformerSpec.swift */,
 			);
-			path = Strategies;
+			path = BeethovenTests;
 			sourceTree = "<group>";
 		};
 		D55C02031DBD210600575260 /* Project */ = {
@@ -213,61 +186,25 @@
 			path = Project;
 			sourceTree = "<group>";
 		};
-		D5843EDD1DBD2CF50077F86E /* Library */ = {
+		D59CB1361C345E0A00290B63 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				D5843EE01DBD2D110077F86E /* Extensions */,
-				D5843EE31DBD2D290077F86E /* YINUtil.swift */,
-				D5843EDE1DBD2CF50077F86E /* Buffer.swift */,
+				F1BA766924827C9600F28F79 /* Package.swift */,
+				D59CB13A1C345E0A00290B63 /* Beethoven */,
 			);
-			path = Library;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		D5843EE01DBD2D110077F86E /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				D5843EE11DBD2D110077F86E /* Array+Extensions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		D5843EE91DBD34680077F86E /* Library */ = {
-			isa = PBXGroup;
-			children = (
-				D5843EEA1DBD34680077F86E /* BufferSpec.swift */,
-			);
-			path = Library;
-			sourceTree = "<group>";
-		};
-		D59CB1361C345E0A00290B63 /* Source */ = {
+		D59CB13A1C345E0A00290B63 /* Beethoven */ = {
 			isa = PBXGroup;
 			children = (
 				D59CB1371C345E0A00290B63 /* Config.swift */,
 				D59CB14A1C345E0A00290B63 /* PitchEngine.swift */,
-				D59CB13A1C345E0A00290B63 /* Estimation */,
-				D5843EDD1DBD2CF50077F86E /* Library */,
-				D59CB14B1C345E0A00290B63 /* SignalTracking */,
-				D59CB1501C345E0A00290B63 /* Transform */,
-			);
-			path = Source;
-			sourceTree = "<group>";
-		};
-		D59CB13A1C345E0A00290B63 /* Estimation */ = {
-			isa = PBXGroup;
-			children = (
 				D59CB13B1C345E0A00290B63 /* EstimationError.swift */,
 				D5843EE51DBD2FAA0077F86E /* EstimationFactory.swift */,
 				D5843EE61DBD2FAA0077F86E /* EstimationStrategy.swift */,
 				D59CB13E1C345E0A00290B63 /* Estimator.swift */,
 				D59CB13F1C345E0A00290B63 /* LocationEstimator.swift */,
-				D59CB1401C345E0A00290B63 /* Strategies */,
-			);
-			path = Estimation;
-			sourceTree = "<group>";
-		};
-		D59CB1401C345E0A00290B63 /* Strategies */ = {
-			isa = PBXGroup;
-			children = (
 				D59CB1411C345E0A00290B63 /* BarycentricEstimator.swift */,
 				D59CB1421C345E0A00290B63 /* HPSEstimator.swift */,
 				D59CB1431C345E0A00290B63 /* JainsEstimator.swift */,
@@ -276,46 +213,19 @@
 				D59CB1461C345E0A00290B63 /* QuinnsFirstEstimator.swift */,
 				D59CB1471C345E0A00290B63 /* QuinnsSecondEstimator.swift */,
 				AFFF3FF01DB633B4004AD9D9 /* YINEstimator.swift */,
-			);
-			path = Strategies;
-			sourceTree = "<group>";
-		};
-		D59CB14B1C345E0A00290B63 /* SignalTracking */ = {
-			isa = PBXGroup;
-			children = (
-				D59CB14D1C345E0A00290B63 /* Units */,
-				D59CB14C1C345E0A00290B63 /* SignalTracker.swift */,
-			);
-			path = SignalTracking;
-			sourceTree = "<group>";
-		};
-		D59CB14D1C345E0A00290B63 /* Units */ = {
-			isa = PBXGroup;
-			children = (
+				D5843EE11DBD2D110077F86E /* Array+Extensions.swift */,
+				D5843EE31DBD2D290077F86E /* YINUtil.swift */,
+				D5843EDE1DBD2CF50077F86E /* Buffer.swift */,
 				E0BF88FC1E85C31A00079F64 /* SimulatorSignalTracker.swift */,
 				D59CB14E1C345E0A00290B63 /* InputSignalTracker.swift */,
 				D59CB14F1C345E0A00290B63 /* OutputSignalTracker.swift */,
-			);
-			path = Units;
-			sourceTree = "<group>";
-		};
-		D59CB1501C345E0A00290B63 /* Transform */ = {
-			isa = PBXGroup;
-			children = (
-				D59CB1511C345E0A00290B63 /* Strategies */,
-				D59CB1541C345E0A00290B63 /* Transformer.swift */,
-			);
-			path = Transform;
-			sourceTree = "<group>";
-		};
-		D59CB1511C345E0A00290B63 /* Strategies */ = {
-			isa = PBXGroup;
-			children = (
+				D59CB14C1C345E0A00290B63 /* SignalTracker.swift */,
 				D59CB1521C345E0A00290B63 /* FFTTransformer.swift */,
 				D59CB1531C345E0A00290B63 /* SimpleTransformer.swift */,
 				AF3190511DABE01600C897CA /* YINTransformer.swift */,
+				D59CB1541C345E0A00290B63 /* Transformer.swift */,
 			);
-			path = Strategies;
+			path = Beethoven;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -440,7 +350,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		D55C01F31DBD1BF400575260 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -448,7 +358,7 @@
 			name = SwiftLint;
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};

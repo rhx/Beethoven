@@ -8,7 +8,7 @@
 //
 //
 
-import UIKit
+import Foundation
 import Accelerate
 
 final class YINUtil {

@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 import AVFoundation
 import Pitchy
 
@@ -78,9 +80,11 @@ public final class PitchEngine {
       activate()
     case AVAudioSessionRecordPermission.denied:
       DispatchQueue.main.async {
+        #if canImport(UIKit)
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
           UIApplication.shared.openURL(settingsURL)
         }
+        #endif
       }
     case AVAudioSessionRecordPermission.undetermined:
       AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted  in
