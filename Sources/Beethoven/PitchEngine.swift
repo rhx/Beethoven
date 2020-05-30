@@ -82,7 +82,11 @@ public final class PitchEngine {
       DispatchQueue.main.async {
         #if canImport(UIKit)
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-          UIApplication.shared.openURL(settingsURL)
+          if #available(iOS 10, tvOS 10, macCatalyst 13, *) {
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+          } else {
+            UIApplication.shared.openURL(settingsURL)
+          }
         }
         #endif
       }
