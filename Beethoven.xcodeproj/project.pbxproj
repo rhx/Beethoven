@@ -398,10 +398,9 @@
 			};
 			buildConfigurationList = D51575A51C343B77006F8E75 /* Build configuration list for PBXProject "Beethoven" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
