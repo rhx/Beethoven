@@ -96,6 +96,8 @@ public final class PitchEngine {
           weakSelf.activate()
         }
       }
+    @unknown default:
+      fatalError()
     }
   }
 

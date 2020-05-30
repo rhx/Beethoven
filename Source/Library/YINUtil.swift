@@ -37,16 +37,19 @@ final class YINUtil {
     let len = vDSP_Length(bufferHalfCount)
     var vSum: Float = 0.0
 
-    for tau in 0 ..< bufferHalfCount {
-      let bufferTau = UnsafePointer<Float>(buffer).advanced(by: tau)
-      // do a diff of buffer with itself at tau offset
-      vDSP_vsub(buffer, 1, bufferTau, 1, &tempBuffer, 1, len)
-      // square each value of the diff vector
-      vDSP_vsq(tempBuffer, 1, &tempBufferSq, 1, len)
-      // sum the squared values into vSum
-      vDSP_sve(tempBufferSq, 1, &vSum, len)
-      // store that in the result buffer
-      resultBuffer[tau] = vSum
+    buffer.withUnsafeBufferPointer {
+      guard let base = $0.baseAddress else { return }
+      for tau in 0 ..< bufferHalfCount {
+        let bufferTau = base + tau
+        // do a diff of buffer with itself at tau offset
+        vDSP_vsub(buffer, 1, bufferTau, 1, &tempBuffer, 1, len)
+        // square each value of the diff vector
+        vDSP_vsq(tempBuffer, 1, &tempBufferSq, 1, len)
+        // sum the squared values into vSum
+        vDSP_sve(tempBufferSq, 1, &vSum, len)
+        // store that in the result buffer
+        resultBuffer[tau] = vSum
+      }
     }
 
     return resultBuffer
@@ -90,12 +93,14 @@ final class YINUtil {
     let fftSetup = vDSP_create_fftsetup(log2n, Int32(kFFTRadix2))
     var audioRealp = [Float](repeating: 0, count: inputCount)
     var audioImagp = [Float](repeating: 0, count: inputCount)
-    var audioTransformedComplex = DSPSplitComplex(realp: &audioRealp, imagp: &audioImagp)
+    var audioTransformedComplex = audioRealp.withUnsafeMutableBufferPointer { rp in
+      return audioImagp.withUnsafeMutableBufferPointer { ip in
+        return DSPSplitComplex(realp: rp.baseAddress!, imagp: ip.baseAddress!)
+      }
+    }
 
-    let temp = UnsafePointer<Float>(buffer)
-
-    temp.withMemoryRebound(to: DSPComplex.self, capacity: buffer.count) { (typeConvertedTransferBuffer) -> Void in
-      vDSP_ctoz(typeConvertedTransferBuffer, 2, &audioTransformedComplex, 1, vDSP_Length(inputCount))
+    buffer.withUnsafeBytes {
+      vDSP_ctoz($0.bindMemory(to: DSPComplex.self).baseAddress!, 2, &audioTransformedComplex, 1, vDSP_Length(inputCount))
     }
 
     // YIN-STYLE AUTOCORRELATION via FFT
@@ -115,19 +120,24 @@ final class YINUtil {
 
     var kernelRealp = [Float](repeating: 0, count: frameSize)
     var kernelImagp = [Float](repeating: 0, count: frameSize)
-    var kernelTransformedComplex = DSPSplitComplex(realp: &kernelRealp, imagp: &kernelImagp)
-
-    let ktemp = UnsafePointer<Float>(kernel)
-
-    ktemp.withMemoryRebound(to: DSPComplex.self, capacity: kernel.count) { (typeConvertedTransferBuffer) -> Void in
-      vDSP_ctoz(typeConvertedTransferBuffer, 2, &kernelTransformedComplex, 1, vDSP_Length(inputCount))
+    var kernelTransformedComplex = kernelRealp.withUnsafeMutableBufferPointer { rp in
+      return kernelImagp.withUnsafeMutableBufferPointer { ip in
+        return DSPSplitComplex(realp: rp.baseAddress!, imagp: ip.baseAddress!)
+      }
     }
 
+    kernel.withUnsafeBytes {
+      vDSP_ctoz($0.bindMemory(to: DSPComplex.self).baseAddress!, 2, &kernelTransformedComplex, 1, vDSP_Length(inputCount))
+    }
     vDSP_fft_zrip(fftSetup!, &kernelTransformedComplex, 1, log2n, FFTDirection(FFT_FORWARD))
 
     var yinStyleACFRealp = [Float](repeating: 0, count: frameSize)
     var yinStyleACFImagp = [Float](repeating: 0, count: frameSize)
-    var yinStyleACFComplex = DSPSplitComplex(realp: &yinStyleACFRealp, imagp: &yinStyleACFImagp)
+    var yinStyleACFComplex = yinStyleACFRealp.withUnsafeMutableBufferPointer { rp in
+      return yinStyleACFImagp.withUnsafeMutableBufferPointer { ip in
+        return DSPSplitComplex(realp: rp.baseAddress!, imagp: ip.baseAddress!)
+      }
+    }
 
     for j in 0 ..< inputCount {
       yinStyleACFRealp[j] = audioRealp[j] * kernelRealp[j] - audioImagp[j] * kernelImagp[j]
@@ -211,7 +221,7 @@ final class YINUtil {
       betterTau = Float(tau)
     }
 
-    return fabs(betterTau)
+    return abs(betterTau)
   }
 
   class func sumSquare(yinBuffer: [Float], start: Int, end: Int) -> Float {

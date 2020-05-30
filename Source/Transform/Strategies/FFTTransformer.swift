@@ -11,7 +11,11 @@ final class FFTTransformer: Transformer {
 
     var realp = [Float](repeating: 0, count: inputCount)
     var imagp = [Float](repeating: 0, count: inputCount)
-    var output = DSPSplitComplex(realp: &realp, imagp: &imagp)
+    var output = realp.withUnsafeMutableBufferPointer { rp in
+      return imagp.withUnsafeMutableBufferPointer { ip in
+        return DSPSplitComplex(realp: rp.baseAddress!, imagp: ip.baseAddress!)
+      }
+    }
 
     let windowSize = bufferSizePOT
     var transferBuffer = [Float](repeating: 0, count: windowSize)
@@ -21,12 +25,9 @@ final class FFTTransformer: Transformer {
     vDSP_vmul((buffer.floatChannelData?.pointee)!, 1, window,
       1, &transferBuffer, 1, vDSP_Length(windowSize))
 
-    let temp = UnsafePointer<Float>(transferBuffer)
-
-    temp.withMemoryRebound(to: DSPComplex.self, capacity: transferBuffer.count) { (typeConvertedTransferBuffer) -> Void in
-        vDSP_ctoz(typeConvertedTransferBuffer, 2, &output, 1, vDSP_Length(inputCount))
+    transferBuffer.withUnsafeBytes {
+      vDSP_ctoz($0.bindMemory(to: DSPComplex.self).baseAddress!, 2, &output, 1, vDSP_Length(inputCount))
     }
-
     vDSP_fft_zrip(fftSetup!, &output, 1, log2n, FFTDirection(FFT_FORWARD))
 
     var magnitudes = [Float](repeating: 0.0, count: inputCount)
