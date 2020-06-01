@@ -1,6 +1,9 @@
 #if canImport(UIKit)
 import UIKit
 #endif
+#if canImport(Cocoa)
+import Cocoa
+#endif
 import AVFoundation
 import Pitchy
 
@@ -76,11 +79,13 @@ public final class PitchEngine {
     let audioSession = AVAudioSession.sharedInstance()
 
     switch audioSession.recordPermission {
-    case AVAudioSessionRecordPermission.granted:
+    case .granted:
       activate()
-    case AVAudioSessionRecordPermission.denied:
+    case .denied:
+      #if os(macOS)
+      print("No permission for recording - please set up in System Preferences")
+      #else
       DispatchQueue.main.async {
-        #if canImport(UIKit)
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
           if #available(iOS 10, tvOS 10, macCatalyst 13, *) {
             UIApplication.shared.open(settingsURL, options: [:]) {
@@ -90,9 +95,9 @@ public final class PitchEngine {
             UIApplication.shared.openURL(settingsURL)
           }
         }
-        #endif
       }
-    case AVAudioSessionRecordPermission.undetermined:
+      #endif
+    case .undetermined:
       AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted  in
         guard let weakSelf = self else { return }
 
@@ -106,9 +111,37 @@ public final class PitchEngine {
           weakSelf.activate()
         }
       }
+      #if !os(macOS)
     @unknown default:
       fatalError()
+      #endif
     }
+
+    #if false
+    var addr = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultInputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: 0)
+    var deviceID = AudioDeviceID(0)
+    var size = UInt32(MemoryLayout.size(ofValue: deviceID))
+    let deviceErr = AudioHardwareServiceGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &deviceID);
+    guard deviceErr == noErr else {
+      print("Cannot get audio device: \(deviceErr)")
+      return
+    }
+    addr.mSelector = kAudioDevicePropertyNominalSampleRate
+    addr.mScope = kAudioObjectPropertyScopeGlobal
+    addr.mElement = 0
+    var sampleRate = Float64(44100)
+    size = UInt32(MemoryLayout.size(ofValue: sampleRate))
+    let sampleErr = AudioHardwareServiceGetPropertyData(deviceID, &addr, 0, nil, &size, &sampleRate);
+    if sampleErr != noErr {
+      print("Error \(sampleErr) getting default sample rate, using \(sampleRate)")
+    }
+    let inProc: AudioDeviceIOProc = { _ = $6 ; return 0 }
+    var outProc: AudioDeviceIOProc? = nil
+    withUnsafeMutablePointer(to: &outProc) {
+      let status = AudioDeviceCreateIOProcID(deviceID, inProc, nil, $0)
+      let audioEngine = AVAudioEngine()
+    }
+    #endif
   }
 
   public func stop() {
